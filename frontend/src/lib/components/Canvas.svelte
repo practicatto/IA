@@ -30,3 +30,10 @@
 		<p class="text-red-500">{error.message}</p>
 	</div>
 {/await}
+
+<style>
+	model-viewer {
+		width: 800px;
+		height: 600px;
+	}
+</style>

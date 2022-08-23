@@ -2,15 +2,13 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import cloud from '$lib/assets/icons/cloud.svg?raw';
 	import Canvas from '$lib/components/Canvas.svelte';
-	import Square from '$lib/components/Loader/SquareLoading.svelte';
+	import SquareLoading from '$lib/components/Loader/SquareLoading.svelte';
+
 	let fileVar: any;
 	let isLoading = false;
 	let msg: any;
 
 	export let name: any;
-
-	let color: string = '#FF3E00';
-	let size: string = '60';
 
 	async function submitForm() {
 		isLoading = true;
@@ -95,7 +93,7 @@
 
 {#if isLoading}
 	<div class="text-center">
-		<Square {size} {color} />
+		<SquareLoading />
 
 		<p>... cargando</p>
 	</div>
