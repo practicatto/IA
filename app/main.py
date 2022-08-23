@@ -34,10 +34,9 @@ def prediction(file: UploadFile = File(...)):
     try:
         with open(file.filename, 'wb') as f:
             shutil.copyfileobj(file.file, f)
-            image = np.load(file.filename)
+            image = np.load(file.filename).astype(np.int)
             res = prediction_porous(image)
             return res
-
     except Exception:
         return {"message": "There was an error uploading the file"}
     finally:
