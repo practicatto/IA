@@ -16,6 +16,7 @@
 {#await medium}
 	<SquareLoading />
 {:then response}
+	<div class="divide-y divide-gray-300 divide-solid" />
 	<model-viewer
 		alt=""
 		src="http://localhost:8080/models/output"
@@ -33,7 +34,7 @@
 
 <style>
 	model-viewer {
-		width: 800px;
-		height: 600px;
+		width: 500px;
+		height: 400px;
 	}
 </style>
