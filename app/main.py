@@ -4,7 +4,7 @@ import shutil
 import os
 import numpy as np
 from model.model import prediction_porous
-
+from starlette.responses import FileResponse
 
 app = FastAPI()
 
@@ -20,11 +20,19 @@ def index():
 
 @app.get('/models/output', response_class=responses.FileResponse)
 async def view():
-    path = os.path.join(file_path, f"porous/output.glb")
+    path = os.path.join(file_path, f"output/output.glb")
     print("path : ",path)
     if os.path.exists(path):
        print("path : ",path)
        return responses.FileResponse(path)
+    else:
+        raise HTTPException(status_code=404, detail="File not found")
+
+@app.get('download/output')
+async def download():
+    path = os.path.join(file_path, f"output/output.glb")
+    if os.path.exists(path):
+        FileResponse(file_path, media_type='application/octet-stream',filename="output.glb")
     else:
         raise HTTPException(status_code=404, detail="File not found")
 
