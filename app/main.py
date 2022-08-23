@@ -18,7 +18,6 @@ def prediction(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, f)
             image = np.load(file.filename)
             prediction_porous(image)
-            
              
     except Exception:
         return {"message": "There was an error uploading the file"}
