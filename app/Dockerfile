@@ -10,8 +10,8 @@ COPY requirements.txt /app
 COPY model /app/model
 COPY ms /app/ms
 COPY metrics /app/metrics
-COPY utils /app/utils
 COPY code /app/code
+COPY code /app/porous
 
 # Install dependencies
 RUN pip install -r requirements.txt

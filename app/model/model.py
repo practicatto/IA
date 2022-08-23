@@ -101,7 +101,7 @@ def stl_to_glb(file):
         ],
     )
     gltf.set_binary_blob(points_binary_blob + normals_binary_blob)
-    gltf.save("../porous/output.glb")
+    gltf.save("porous/output.glb")
     
 
 
