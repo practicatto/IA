@@ -34,5 +34,10 @@
 		"typescript": "^4.7.4",
 		"vite": "^3.0.4"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"js-3d-model-viewer": "^0.1.7",
+		"online-3d-viewer": "^0.8.15",
+		"three": "^0.143.0"
+	}
 }

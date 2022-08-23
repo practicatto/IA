@@ -1,6 +1,15 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
 	import zip from '$lib/assets/icons/zip.svg?raw';
+	import modelPlayer from 'js-3d-model-viewer'
+	import * as THREE from 'three';
+const viewerElement = document.getElementById('viewer')
+const opts = {
+  grid: true,
+  trackball: false
+}
+const scene = modelPlayer.prepareScene(viewerElement, opts)
+modelPlayer.loadObject(scene, '  models/poresp.stl')
 
 	let fileVar: any;
 	let isLoading = false;
@@ -114,8 +123,5 @@
 {/if}
 
 <!-- svelte-ignore a11y-missing-attribute -->
-<iframe
-	id="vs_iframe"
-	src="https://www.viewstl.com/?embedded"
-	style="border:0;margin:0;width:100%;height:100%;"
-/>
+<div id="viewer'">
+</div>
