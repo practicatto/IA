@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
-	import zip from '$lib/assets/icons/zip.svg?raw';
+	import cloud from '$lib/assets/icons/cloud.svg?raw';
+	import Canvas from '$lib/components/Canvas.svelte';
 	let fileVar: any;
 	let isLoading = false;
 	let msg: any;
@@ -45,47 +46,25 @@
 		</div>
 		<div class="mt-5 md:mt-0 md:col-span-2">
 			<form class="space-y-8 divide-y">
-				<div
-					class="px-4 py-5 dark:bg-slate-700 bg-white space-y-6 sm:p-6 shadow sm:rounded-md sm:overflow-hidden  sm:grid sm:grid-cols-3 sm:gap-3 sm:items-start  sm: sm:pt-5"
-				>
+				<div class="flex justify-center items-center w-full">
 					<label
-						for="the-file"
-						class="block text-sm font-medium dark:text-gray-200 text-gray-700 sm:mt-px sm:pt-2"
+						for="dropzone-file"
+						class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
 					>
-						Secuencia de medios porosos:
-					</label>
-					<div class="mt-1 sm:mt-0 sm:col-span-2">
-						<div
-							class="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
-						>
-							<div class="space-y-1 text-center text-gray-400">
-								<Icon
-									class="mx-auto h-12 w-12"
-									fill="currentColor"
-									stroke={'text-gray-200'}
-									data={zip}
-								/>
-
-								<div class="flex text-sm text-gray-600 ">
-									<label
-										for="file-upload"
-										class="relative cursor-pointer dark:bg-slate-700 dark:text-teal-300 bg-white rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none focus-within:ring-2  focus-within:ring-teal-500"
-									>
-										<span>Subir archivo</span>
-										<input
-											id="file-upload"
-											name="file-upload"
-											type="file"
-											class="sr-only"
-											accept=".zip,.npy"
-											bind:files={fileVar}
-										/>
-									</label>
-								</div>
+						<div class="flex flex-col justify-center items-center pt-5 pb-6 ">
+							<div class="text-gray-200">
+								<Icon class="mx-auto h-28 w-full" fill="currentColor" data={cloud} />
 							</div>
-							<p class="text-xs dark:text-gray-300 text-gray-500">Zip o npy</p>
+
+							<p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+								<span class="font-semibold"
+									>Haz click para subir una secuencia de medios porosos</span
+								>
+							</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400">.ZIP or .npy</p>
 						</div>
-					</div>
+						<input id="dropzone-file" type="file" class="hidden" required />
+					</label>
 				</div>
 			</form>
 		</div>
@@ -112,12 +91,4 @@
 	</div>
 {/if}
 
-<model-viewer
-	alt=""
-	src="src/models/poroporoso.glb"
-	ar
-	ar-modes="webxr scene-viewer quick-look"
-	environment-image="neutral"
-	auto-rotate
-	camera-controls
-/>
+<Canvas />

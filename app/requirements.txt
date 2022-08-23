@@ -108,3 +108,5 @@ watchfiles==0.16.1
 wcwidth==0.2.5
 websockets==10.3
 wrapt==1.14.1
+torch==1.12.1
+pygltflib==1.15.2
