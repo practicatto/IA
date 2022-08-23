@@ -2,6 +2,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import Canvas from '$lib/components/Canvas.svelte';
 	import SquareLoading from '$lib/components/Loader/SquareLoading.svelte';
+	import Table from '$lib/components/Table.svelte';
 
 	let fileVar: any;
 	let isLoading = false;
@@ -116,7 +117,13 @@
 		Resultados de medio poroso
 	</h1>
 	<div class="grid grid-cols-4 gap-6">
-		<p>{JSON.stringify(msg)}</p>
+		<div>
+			<h3>Porosidad:</h3>
+			<p>{msg.porosity}</p>
+			<h3>Tau:</h3>
+			<p>{msg.tau}</p>
+		</div>
+		<Table porosity={msg.porosity} tau={msg.tau} />
 		<Canvas />
 	</div>
 {/if}
