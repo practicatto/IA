@@ -20,7 +20,7 @@
 		//console.log(fileVar);
 		//console.log(JSON.stringify(fileVar));
 
-		const res = await fetch('http://localhost:8080/predict', {
+		const res = await fetch('http://localhost:8080/prediction', {
 			method: 'POST',
 			body: data
 		});
