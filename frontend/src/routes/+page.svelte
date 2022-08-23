@@ -2,9 +2,15 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import cloud from '$lib/assets/icons/cloud.svg?raw';
 	import Canvas from '$lib/components/Canvas.svelte';
+	import Square from '$lib/components/Loader/SquareLoading.svelte';
 	let fileVar: any;
 	let isLoading = false;
 	let msg: any;
+
+	export let name: any;
+
+	let color: string = '#FF3E00';
+	let size: string = '60';
 
 	async function submitForm() {
 		isLoading = true;
@@ -14,7 +20,7 @@
 		//console.log(fileVar);
 		//console.log(JSON.stringify(fileVar));
 
-		const res = await fetch('http://127.0.0.1:8000/upload', {
+		const res = await fetch('http://localhost:8080/predict', {
 			method: 'POST',
 			body: data
 		});
@@ -23,7 +29,7 @@
 	}
 
 	async function getHello() {
-		const res = await fetch(`http://127.0.0.1:8000/`);
+		const res = await fetch(`http://localhost:8080`);
 		const text = await res.text();
 
 		if (res.ok) {
@@ -32,6 +38,8 @@
 			throw new Error(text);
 		}
 	}
+
+	let promise = getHello();
 </script>
 
 <div>
@@ -63,7 +71,13 @@
 							</p>
 							<p class="text-xs text-gray-500 dark:text-gray-400">.ZIP or .npy</p>
 						</div>
-						<input id="dropzone-file" type="file" class="hidden" required />
+						<input
+							id="dropzone-file"
+							bind:files={fileVar}
+							type="file"
+							class="hidden"
+							accept=".zip,.npy"
+						/>
 					</label>
 				</div>
 			</form>
@@ -81,14 +95,12 @@
 
 {#if isLoading}
 	<div class="text-center">
+		<Square {size} {color} />
+
 		<p>... cargando</p>
 	</div>
 {/if}
 
 {#if msg}
-	<div class="text-center">
-		<p>{JSON.stringify(msg)}</p>
-	</div>
+	<Canvas />
 {/if}
-
-<Canvas />

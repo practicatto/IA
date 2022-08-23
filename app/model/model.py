@@ -102,28 +102,28 @@ def stl_to_glb(file):
     )
     gltf.set_binary_blob(points_binary_blob + normals_binary_blob)
     gltf.save("porous/output.glb")
-    
+
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 class ConvLSTMCell(nn.Module):
 
-    def __init__(self, in_channels, out_channels, 
+    def __init__(self, in_channels, out_channels,
     kernel_size, padding, activation, frame_size):
 
-        super(ConvLSTMCell, self).__init__()  
+        super(ConvLSTMCell, self).__init__()
 
         if activation == "tanh":
-            self.activation = torch.tanh 
+            self.activation = torch.tanh
         elif activation == "relu":
             self.activation = torch.relu
-        
+
         # Idea adapted from https://github.com/ndrplz/ConvLSTM_pytorch
         self.conv = nn.Conv2d(
-            in_channels=in_channels + out_channels, 
-            out_channels=4 * out_channels, 
-            kernel_size=kernel_size, 
-            padding=padding)           
+            in_channels=in_channels + out_channels,
+            out_channels=4 * out_channels,
+            kernel_size=kernel_size,
+            padding=padding)
 
         # Initialize weights for Hadamard Products
         self.W_ci = nn.Parameter(torch.Tensor(out_channels, *frame_size))
@@ -153,7 +153,7 @@ class ConvLSTMCell(nn.Module):
 
 class ConvLSTM(nn.Module):
 
-    def __init__(self, in_channels, out_channels, 
+    def __init__(self, in_channels, out_channels,
     kernel_size, padding, activation, frame_size):
 
         super(ConvLSTM, self).__init__()
@@ -161,7 +161,7 @@ class ConvLSTM(nn.Module):
         self.out_channels = out_channels
 
         # We will unroll this over time steps
-        self.convLSTMcell = ConvLSTMCell(in_channels, out_channels, 
+        self.convLSTMcell = ConvLSTMCell(in_channels, out_channels,
         kernel_size, padding, activation, frame_size)
 
     def forward(self, X):
@@ -172,15 +172,15 @@ class ConvLSTM(nn.Module):
         batch_size, _, seq_len, height, width = X.size()
 
         # Initialize output
-        output = torch.zeros(batch_size, self.out_channels, seq_len, 
+        output = torch.zeros(batch_size, self.out_channels, seq_len,
         height, width, device=device)
-        
+
         # Initialize Hidden State
-        H = torch.zeros(batch_size, self.out_channels, 
+        H = torch.zeros(batch_size, self.out_channels,
         height, width, device=device)
 
         # Initialize Cell Input
-        C = torch.zeros(batch_size,self.out_channels, 
+        C = torch.zeros(batch_size,self.out_channels,
         height, width, device=device)
 
         # Unroll over time steps
@@ -194,7 +194,7 @@ class ConvLSTM(nn.Module):
 
 class Seq2Seq(nn.Module):
 
-    def __init__(self, num_channels, num_kernels, kernel_size, padding, 
+    def __init__(self, num_channels, num_kernels, kernel_size, padding,
     activation, frame_size, num_layers):
 
         super(Seq2Seq, self).__init__()
@@ -205,13 +205,13 @@ class Seq2Seq(nn.Module):
         self.sequential.add_module(
             "convlstm1", ConvLSTM(
                 in_channels=num_channels, out_channels=num_kernels,
-                kernel_size=kernel_size, padding=padding, 
+                kernel_size=kernel_size, padding=padding,
                 activation=activation, frame_size=frame_size)
         )
 
         self.sequential.add_module(
             "batchnorm1", nn.BatchNorm3d(num_features=num_kernels)
-        ) 
+        )
 
         # Add rest of the layers
         for l in range(2, num_layers+1):
@@ -219,13 +219,13 @@ class Seq2Seq(nn.Module):
             self.sequential.add_module(
                 f"convlstm{l}", ConvLSTM(
                     in_channels=num_kernels, out_channels=num_kernels,
-                    kernel_size=kernel_size, padding=padding, 
+                    kernel_size=kernel_size, padding=padding,
                     activation=activation, frame_size=frame_size)
                 )
-                
+
             self.sequential.add_module(
                 f"batchnorm{l}", nn.BatchNorm3d(num_features=num_kernels)
-                ) 
+                )
 
         # Add Convolutional Layer to predict output frame
         self.conv = nn.Conv2d(
@@ -239,11 +239,11 @@ class Seq2Seq(nn.Module):
 
         # Return only the last output frame
         output = self.conv(output[:,:,-1])
-        
+
         return nn.Sigmoid()(output)
 
-model = Seq2Seq(num_channels=1, num_kernels=64, 
-kernel_size=(3, 3), padding=(1, 1), activation="relu", 
+model = Seq2Seq(num_channels=1, num_kernels=64,
+kernel_size=(3, 3), padding=(1, 1), activation="relu",
 frame_size=(64,64), num_layers=1).to(device)
 model_state_dict = torch.load('model/model_20.pth',map_location=torch.device('cpu'))
 model.load_state_dict(model_state_dict)
@@ -251,15 +251,14 @@ model.load_state_dict(model_state_dict)
 def prediction_porous(image):
     print("prediction_porous")
     image=image.reshape((1, 10,64,64))
-    image = torch.tensor(image).unsqueeze(1)                                    
-    image = image.to(device)  
+    image = torch.tensor(image).unsqueeze(1)
+    image = image.to(device)
     output = np.zeros((1,10,64,64), dtype=np.uint8)
 # Loop over timesteps
     for timestep in range(10):
-        input = image[:,:,timestep:timestep+1] 
-        output[:,timestep]=(model(input).squeeze(1).cpu()>0.5) 
+        input = image[:,:,timestep:timestep+1]
+        output[:,timestep]=(model(input).squeeze(1).cpu()>0.5)
     ps.io.to_stl(output[0],"output.stl")
     print("done")
     stl_to_glb("output.stl")
-    return  {"url":"porous/output.glb"}
-
+    return  {"url":"model/output/output.glb"}
